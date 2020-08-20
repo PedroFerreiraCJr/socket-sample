@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <string.h>
 
 #define PORT 8080
@@ -18,7 +18,7 @@ int main(int argc, char const *argv[]) {
 	char buffer[1024] = {0};
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		printf("\n Socket creation error \n");
+		perror("Falha na criação do socket");
 		return -1;
 	}
 
@@ -26,17 +26,17 @@ int main(int argc, char const *argv[]) {
 	serv_addr.sin_port = htons(PORT);
 
 	if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) {
-		printf("\nInvalid address/ Address not supported \n");
+		perror("Endereço inválido ou não suportado");
 		return -1;
 	}
 
 	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-		printf("\nConnection Failed \n");
+		perror("Houve uma falha na conexão do socket");
 		return -1;
 	}
 
 	while (true) {
-		printf("Type something: ");
+		printf("Digite algo: ");
 		fgets(buffer, sizeof(buffer), stdin);
 
 		if (!strcmp(buffer, "/exit\n")) {
