@@ -6,6 +6,11 @@
 #include <string.h>
 
 #define PORT 8080
+#define true 1
+
+/*
+	compile: gcc -Wall -o server server.c
+*/
 
 int main(int argc, char const *argv[]) {
 
@@ -14,9 +19,7 @@ int main(int argc, char const *argv[]) {
 	int opt = 1;
 	int addrlen = sizeof(address);
 	char buffer[1024] = {0};
-	char *hello = "Hello from server";
 
-	// Creating socket file descriptor
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
 		perror("socket failed");
 		exit(EXIT_FAILURE);
@@ -50,9 +53,14 @@ int main(int argc, char const *argv[]) {
 
 	do {
 		valread = read(new_socket, buffer, 1024);
-		printf("Message received: \n\t%s", buffer);
+		if (valread == 0 || !strcmp(buffer, "/exit")) {
+			printf("exiting... bye!");
+			break;
+		}
+
+		printf("Message received: \n::%s", buffer);
 		memset(buffer, 0, sizeof(buffer));
-	} while (valread > 0);
+	} while (true);
 
 	return 0;
 }
